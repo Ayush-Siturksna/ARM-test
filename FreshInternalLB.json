@@ -111,9 +111,9 @@
                     {
                         "name": "[variables('FrontIPname')]",
                         "properties": {
-                            "privateIPAddress": "10.0.1.9",
+                            "privateIPAddress": "null",
                             "privateIPAddressVersion": "IPv4",
-                            "privateIPAllocationMethod": "Static",
+                            "privateIPAllocationMethod": "Dynamic",
                             "subnet": {
                                 "id": "[concat(variables('providerid'),'/virtualNetworks/',parameters('vNet_name'),'/subnets/',parameters('subnetName'))]"
                             }
