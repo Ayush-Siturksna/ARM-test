@@ -1,0 +1,204 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "cust-string" : {
+          "defaultValue": "HEC45-ARM" ,
+        "type": "string" 
+        },
+
+        
+       "environment" : {
+          "defaultValue": "nonprod" ,
+          "allowedValues": [
+              "nonprod",
+              "prod"
+          ] ,
+
+          "type": "string" 
+        }
+      ,
+      
+         "CID" : {
+          "defaultValue": "abc" ,
+        "type": "string" 
+        } ,
+
+      
+
+         "SID" : {
+          "defaultValue": "qs" ,
+        "type": "string" 
+        } ,
+        
+         "Fport" : {
+          "defaultValue": "443" ,
+        "type": "string" 
+        } ,
+
+         "Bport" : {
+          "defaultValue": "44380" ,
+        "type": "string" 
+        }  ,
+
+     "vNet_name": {
+
+            "defaultValue" : "myVNet" ,
+            "type": "string",
+            "metadata": {
+                "description": "The ID of the VNet."
+            }
+        },
+        "subnetName": {
+            "defaultValue" : "myBackendSubnet" ,
+            "type": "string",
+            "metadata": {
+                "description": "The name of the APG Subnet."
+            }
+        }
+
+
+
+
+
+
+
+    
+    },
+
+
+    "variables": {
+        "networkApiVersion": "2022-01-01" ,
+        "Lbname": "[concat('lb-',parameters('cust-string'),'-int-IB-',parameters('environment'),'-',parameters('SID'))]"  ,
+
+        "FrontIPname" : "[concat('vh',parameters('CID'),parameters('SID'))]" ,
+
+        "Backendpoolname" : "[concat('bp-',parameters('cust-string'),'-int-IB-',parameters('environment'),'-',parameters('SID'))]" ,
+
+        "healthprobename" : "[concat('hp-',parameters('cust-string'),'-int-IB-',parameters('environment'),'-',parameters('SID'),'-',parameters('Bport'))]" ,
+
+        "LBrule" : "[concat('lbrule-',parameters('cust-string'),'-int-IB-',parameters('environment'),'-',parameters('SID'),'-',parameters('Bport'))]"  ,
+
+        "providerid": "[concat(subscription().id,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Network')]"
+
+        // /subscriptions/4fa4ea5d-25e5-4601-9bf6-94654ba657fd/resourceGroups/ARM-test/providers/Microsoft.Network/
+
+
+        // lb-HEC45-MBU-int-IB-01
+        // vh[CID][SID]lb
+        // bp-[Cust-string] ]-int-IB-[layer]-[SID]
+        // hp-[Cust-string] ]-int-IB-[layer]-[SID]-[PORT]
+        // lbrule-[Cust-string] ]-int-IB-[layer]-[SID]-[PORT]
+
+
+
+    }  ,
+
+
+
+
+
+    "resources": [
+        {
+            "apiVersion": "[variables('networkApiVersion')]",
+            "name": "[variables('Lbname')]",
+            "type": "Microsoft.Network/loadBalancers",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [],
+            "tags": {},
+            "properties": {
+                "frontendIPConfigurations": [
+                    {
+                        "name": "[variables('FrontIPname')]",
+                        "properties": {
+                            "privateIPAddress": "10.0.1.9",
+                            "privateIPAddressVersion": "IPv4",
+                            "privateIPAllocationMethod": "Static",
+                            "subnet": {
+                                "id": "[concat(variables('providerid'),'/virtualNetworks/',parameters('vNet_name'),'/subnets/',parameters('subnetName'))]"
+                            }
+                        },
+                        "zones": [
+                            "2",
+                            "1",
+                            "3"
+                        ]
+                    }
+                ],
+                "backendAddressPools": [
+                    {
+                        "name": "[variables('Backendpoolname')]"
+                    }
+                ],
+                "probes": [
+                    {
+                        "name": "[variables('healthprobename')]",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "port": 44380,
+                            "requestPath": null,
+                            "intervalInSeconds": 5,
+                            "numberOfProbes": 1
+                        }
+                    }
+                ],
+                "loadBalancingRules": [
+                    {
+                        "name": "[variables('LBrule')]",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(variables('providerid'),'/loadBalancers/',variables('Lbname'),'/frontendIPConfigurations/',variables('FrontIPname'))]"
+                            },
+                            "frontendPort": "[parameters('Fport')]",
+                            "backendPort": "[parameters('Bport')]",
+                            "enableFloatingIP": false,
+                            "idleTimeoutInMinutes": 4,
+                            "protocol": "TCP",
+                            "loadDistribution": "SourceIP",
+                            "probe": {
+                                
+                                 "id": "[concat(variables('providerid'),'/loadBalancers/',variables('Lbname'),'/probes/',variables('healthprobename'))]"
+                            },
+                            "disableOutboundSnat": true,
+                            "enableTcpReset": false,
+                            "backendAddressPools": [
+                                {
+                                    
+                                     "id": "[concat(variables('providerid'),'/loadBalancers/',variables('Lbname'),'/backendAddressPools/',variables('Backendpoolname'))]"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "inboundNatRules": [],
+                "outboundRules": []
+            },
+            "sku": {
+                 "name": "Standard",
+                "tier": "Regional"
+            }
+        },
+        {
+            "apiVersion": "[variables('networkApiVersion')]",
+            "type": "Microsoft.Network/loadBalancers/backendAddressPools",
+            "name": "[concat(variables('Lbname'),'/',variables('Backendpoolname'))]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/loadBalancers/',variables('Lbname'))]"
+            ],
+            "properties": {
+                "loadBalancerBackendAddresses": [
+                    {
+                        "name": "[uniqueString(variables('Backendpoolname'))]",
+                        "properties": {
+                            "virtualNetwork": {
+                                "id": "[concat(subscription().id,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Network/virtualNetworks/',parameters('vNet_name'))]"
+                            },
+                            "ipAddress": "10.0.1.4"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
