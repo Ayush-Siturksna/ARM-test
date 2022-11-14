@@ -1,0 +1,401 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+
+
+    
+    "parameters": {
+        "cust-string" : {
+          "defaultValue": "HEC45-ARM" ,
+        "type": "string" 
+        }
+      ,
+
+       "environment" : {
+          "defaultValue": "nonprod" ,
+          "allowedValues": [
+              "nonprod",
+              "prod"
+          ] ,
+
+        "type": "string" 
+        }
+      ,
+       "SID" : {
+          "defaultValue": "QS" ,
+        "type": "string" 
+        } ,
+
+         "Hostname" : {
+          "defaultValue": "abc.com" ,
+        "type": "string" 
+        } ,
+
+         "Fport" : {
+          "defaultValue": "443" ,
+        "type": "string" 
+        } ,
+
+         "Bport" : {
+          "defaultValue": "44380" ,
+        "type": "string" 
+        } ,
+
+
+
+
+        
+         "backendCertificateData" : {
+          "defaultValue": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tDQpNSUlHeGpDQ0JhNmdBd0lCQWdJUVRTcjdYTjk5ZHRoMGpTVG1pR0xvV2pBTkJna3Foa2lHOXcwQkFRc0ZBRENCDQpqekVMTUFrR0ExVUVCaE1DUjBJeEd6QVpCZ05WQkFnVEVrZHlaV0YwWlhJZ1RXRnVZMmhsYzNSbGNqRVFNQTRHDQpBMVVFQnhNSFUyRnNabTl5WkRFWU1CWUdBMVVFQ2hNUFUyVmpkR2xuYnlCTWFXMXBkR1ZrTVRjd05RWURWUVFEDQpFeTVUWldOMGFXZHZJRkpUUVNCRWIyMWhhVzRnVm1Gc2FXUmhkR2x2YmlCVFpXTjFjbVVnVTJWeWRtVnlJRU5CDQpNQjRYRFRJeU1EZ3hOVEF3TURBd01Gb1hEVEl6TURreE5USXpOVGsxT1Zvd0xERXFNQ2dHQTFVRUF4TWhkbWh6DQpaSFJrWkRGM1pEQXhMbk5oY0M1a2FYSXVjM1F0WjNKdmRYQXVZMjl0TUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGDQpBQU9DQVE4QU1JSUJDZ0tDQVFFQXhVY2xsMnhrVjRDZ0pIWWNOWUVmWlk1M3QrOHZPSzcxWWk2UFJuaFJwY0d2DQpicktSMHkrUzg3aUhNY2g5dUl6Q3oxbHlCVkkvRjlHRWdXME53RzZWcHd2RFgrZW9LMk1uTFloK0pBc2RnMk5GDQpIT1BIMHA4NzRaYlZRcnRSR1dGdU4rNjRTYk1nVXJuckRlL2Jycm1mRi9nd0xRQWhHbW81SDZIQks3KzBjLzlYDQo4ampxMEdicDJqSWt3aEovWkRDc05aK3J2aGp0QW56Wll2eUtxbEhYVThJTTFQYXd3OUFZR0ZBNVZlZ0tEa1Y0DQpoRG02RDNXTVNUQU8xWVVxSVZRQVBDY2c1Q28xZEw5aVpySThPdWMzS0JMNlQ4S093VWQzeXdpTzRzTEMvS2hMDQpHT3ZrM1J1dlJDZmVEZ3krNnphNnp1encyS2lqUWx0QUZlNFh6ZWpDY1FJREFRQUJvNElEZmpDQ0Ezb3dId1lEDQpWUjBqQkJnd0ZvQVVqWXhleEZTdGl1RjM2WnY1bXdYaHVBR05ZZUV3SFFZRFZSME9CQllFRkpxZmNEc1RjS3BuDQpac3ZrME9DemtsUGQyWFdOTUE0R0ExVWREd0VCL3dRRUF3SUZvREFNQmdOVkhSTUJBZjhFQWpBQU1CMEdBMVVkDQpKUVFXTUJRR0NDc0dBUVVGQndNQkJnZ3JCZ0VGQlFjREFqQkpCZ05WSFNBRVFqQkFNRFFHQ3lzR0FRUUJzakVCDQpBZ0lITUNVd0l3WUlLd1lCQlFVSEFnRVdGMmgwZEhCek9pOHZjMlZqZEdsbmJ5NWpiMjB2UTFCVE1BZ0dCbWVCDQpEQUVDQVRDQmhBWUlLd1lCQlFVSEFRRUVlREIyTUU4R0NDc0dBUVVGQnpBQ2hrTm9kSFJ3T2k4dlkzSjBMbk5sDQpZM1JwWjI4dVkyOXRMMU5sWTNScFoyOVNVMEZFYjIxaGFXNVdZV3hwWkdGMGFXOXVVMlZqZFhKbFUyVnlkbVZ5DQpRMEV1WTNKME1DTUdDQ3NHQVFVRkJ6QUJoaGRvZEhSd09pOHZiMk56Y0M1elpXTjBhV2R2TG1OdmJUQ0NBWDRHDQpDaXNHQVFRQjFua0NCQUlFZ2dGdUJJSUJhZ0ZvQUhZQXJmZSsrbnovRU1pTG5UMmNIajRZYXJSbktWM1BzUXdrDQp5b1dHTk92Y2dvb0FBQUdDb25SanpRQUFCQU1BUnpCRkFpRUEwRkF0elZSS0ZxNi9wK1RJdnNlNnFoQ2h3eFJiDQptSnEwZTU4SG9ReDRwZFlDSUVDSGtiRk9TckpJYzgrSTJ0R21YMzY3cHRnbnhZd3hzSlhjUFRkUE12YmZBSFVBDQplaktNVk5pM0xiWWc2ampnVWg3cGhCWndNaE9GVFR2U0s4RTZWNk5TNjFJQUFBR0NvblJqMFFBQUJBTUFSakJFDQpBaUF5bWpyTmo5MXBWNkQ5d0FmRGYwb0FrNVJjVjVHNFJBTjYvdzFMTXpuZWJ3SWdKRXdIMmUwbndKRTdWb2oyDQpsT2FMUmNVVVJvakFWZmUwcjZySUV4VHI4OHdBZHdEb1B0RGFQdlVHTlRMblZ5aThpV3ZKQTlQTDBSRnI3T3RwDQo0WGQ5YlFhOWJnQUFBWUtpZEdOaEFBQUVBd0JJTUVZQ0lRQ0lMOXZ3cUloU1FzM0ZYOUdSRkdBUHdOWUpKMTdtDQpSNmluOS9TM3JLUGJnd0loQU91bDhuZGMxbURxZXR1MkZFMTJ2VnZoeHBnQmJNa2ZzTXYvS284OHhKcTRNSUdtDQpCZ05WSFJFRWdaNHdnWnVDSVhab2MyUjBaR1F4ZDJRd01TNXpZWEF1WkdseUxuTjBMV2R5YjNWd0xtTnZiWUllDQpabWx2Y21rdFpHVjJMbk5oY0M1a2FYSXVjM1F0WjNKdmRYQXVZMjl0Z2lObWFXOXlhUzF3Y21VdGNISnZaQzV6DQpZWEF1WkdseUxuTjBMV2R5YjNWd0xtTnZiWUlWWm1sdmNtbGtaWFl1YzNRdFozSnZkWEF1WTI5dGdocG1hVzl5DQphWEJ5WlMxd2NtOWtMbk4wTFdkeWIzVndMbU52YlRBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVFFQW1NT1Y5eUdkDQpiZHhtVlFWQkE3UGx0WkNlM2YwZEpEMzUwZG94RllhUzQ0Tk5aWWVXcHUzVHdZVSs4dW9ycUJsNDFZTTlDQzJsDQpBdnVaOEtwU1JNSHJ6cHRLYm1jV1poM0VtcHh1Zzk4YnNvbll2cFlLVXM5NG1jNkNjbkFFdEE3YzNRcFEvaWlhDQpySkFQd1JvRXpINlc2L3pRTmhrWmx3Tml3WjVHVld5OElIOFFCYTFOYkQ5N05QL1VRZWZMRkZ2ckZBRVhaUFUvDQp6VytNRlA4NWJTKyt0L1J2Q0s2djEyUWFSV2JqRFFWeWJ2clhGOEptR3R4V2htY1VieGNvczg1U3kxYzMyMnd5DQpCSS9qMlhaamZ3Z3lwcm9iYlNhdzN5YVNpc0dJa2c3Zm4rSXNZZW0wM1pkalNFWlcxdVR0RktvdWo3TC9zdVdnDQp2YjZNRzEyeUFUV0dhdz09DQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0t" ,
+        "type": "string" 
+        } ,
+
+
+
+
+
+
+        "sslCertificateData": {
+            "defaultValue": "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" ,
+            "type": "string",
+            "metadata": {
+                "description": "The base-64 encoded SSL certificate PFX data."
+            }
+        },
+        "sslCertificatePassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The SSL certificate password."
+            }
+        },
+        "vNet_name": {
+
+            "defaultValue" : "myVNet" ,
+            "type": "string",
+            "metadata": {
+                "description": "The ID of the VNet."
+            }
+        },
+        "subnetName": {
+            "defaultValue" : "myAGSubnet" ,
+            "type": "string",
+            "metadata": {
+                "description": "The name of the APG Subnet."
+            }
+        }
+
+
+    },
+    "variables": {
+        "networkApiVersion": "2022-01-01",
+
+        "subnetId": "[concat(variables('vNetId'), '/subnets/', parameters('subnetName'))]",
+
+        "appGatewayPublicIpAddressId": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicipname'))]",
+
+        "appGwname": "[concat('apg-',parameters('cust-string'),'-',parameters('environment'),'01')]",
+        "bpname": "[concat('bp-',parameters('cust-string'),'-',parameters('environment'),'-' ,parameters('SID'))]",
+        "httpsettingname": "[concat('httpsetting-',parameters('cust-string'),'-',parameters('environment'),'-',parameters('SID'))]",
+        "listenername": "[concat('listener-',parameters('cust-string'),'-',parameters('environment'),'-',parameters('SID'))]",
+        "publicipname": "[concat('pip-apg',parameters('cust-string'),'-',parameters('environment'),'-01')]",
+        "healthprobename": "[concat('hp-',parameters('cust-string'),'-',parameters('environment'),'-',variables('appGwBePort'))]",
+        "healthprobe-auth-cer":"[concat(variables('healthprobename'),uniqueString(parameters('SID')))]" ,
+        "rulename": "[concat('apgrule-',parameters('cust-string'),'-',parameters('environment'),'-',parameters('SID'))]",
+        "diagsettingname": "[concat('diag-apg',parameters('cust-string'),'-',parameters('environment'),'-01')]",
+
+       
+        // apg-HEC45-MBU-nonprod-01
+        // bp-HEC45-MBU-nonprod-SID
+        // httpsetting-HEC45-MBU-nonprod-SID
+        // listener-HEC45-MBU-https-nonprod-SID
+        // pip-apg-HEC45-MBU-nonProd-01
+        // apgrule-HEC45-MBU-nonprod-SID
+        // hp-HEC45-MBU-SID-44380
+        // diag-apg-HEC45-MBU-nonprod-01
+          
+
+        "appGwId": "[resourceId('Microsoft.Network/applicationGateways/', variables('appGwname'))]",
+
+        "appGwSize": "WAF_Medium",
+        "appGwTier": "WAF",
+        "appGwCapacity": 2,
+        "appGwFePort": "[parameters('Fport')]",
+        "appGwFeProtocol": "Https",
+        "appGwBePort": "[parameters('Bport')]",
+        "appGwBEProtocol": "Https" ,
+         "vnetId" :  "[concat(subscription().id,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Network/virtualNetworks/',parameters('vnet_name'))]"
+        
+    },
+    "resources": [
+      {
+
+       "apiVersion": "2017-05-01-preview",
+   "name": "[concat(variables('appGwname'), '/Microsoft.Insights/diagnosticSettings')]",
+   "type":"Microsoft.Network/applicationGateways/providers/diagnosticSettings",
+   "location": "[resourceGroup().location]" ,
+     "dependsOn": [
+                "[concat('Microsoft.Network/applicationGateways/', variables('appGwname'))]"
+            ],
+    //  "id": "[concat(subscription().id,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Insights/diagnosticSettings/',variables('diagsettingname'))]"
+    // ,
+    
+   
+   "properties":
+    {
+
+          "name":"[variables('diagsettingname')]",
+        "logs": [
+            {
+                "category": "ApplicationGatewayAccessLog",
+                "categoryGroup": null,
+                "enabled": true,
+                "retentionPolicy": {
+                    "days": 0,
+                    "enabled": false
+                }
+            },
+            {
+                "category": "ApplicationGatewayPerformanceLog",
+                "categoryGroup": null,
+                "enabled": true,
+                "retentionPolicy": {
+                    "days": 0,
+                    "enabled": false
+                }
+            },
+            {
+                "category": "ApplicationGatewayFirewallLog",
+                "categoryGroup": null,
+                "enabled": true,
+                "retentionPolicy": {
+                    "days": 0,
+                    "enabled": false
+                }
+            }
+        ],
+        "metrics": [
+            {
+                "enabled": true,
+                "retentionPolicy": {
+                    "days": 0,
+                    "enabled": false
+                },
+                "category": "AllMetrics"
+            }
+        ],
+        "workspaceId": "/subscriptions/74568cee-3f07-41ce-9ddc-2f4f6f44b861/resourcegroups/heconazure-loganalytics/providers/microsoft.operationalinsights/workspaces/heconazuresplunk",
+        "logAnalyticsDestinationType": null
+    }
+     }
+
+ ,
+        
+
+
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name":"[variables('publicipname')]",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "[variables('networkApiVersion')]",
+            "comments": "This creates a single, dynamically allocated public IP address for use by the Application Gateway.",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic"
+            }
+        },
+
+
+
+
+        {
+            "type": "Microsoft.Network/applicationGateways",
+            "name": "[variables('appGwname')]",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "[variables('networkApiVersion')]",
+            "comments": "This creates the Application Gateway.",
+            "dependsOn": [
+                "[concat('Microsoft.Network/publicIPAddresses/', variables('publicipname'))]"
+            ],
+            "properties": {
+                "sku": {
+                    "name": "[variables('appGwSize')]",
+                    "tier": "[variables('appGwTier')]",
+                    "capacity": "[variables('appGwCapacity')]"
+                },
+                "gatewayIPConfigurations": [
+                    {
+                        "name": "gatewayIpCofig",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetId')]"
+                            }
+                        }
+                    }
+                ],
+
+                 "authenticationCertificates": [
+                    {
+                        "name": "[variables('healthprobe-auth-cer')]",
+                        "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('appGwname')), '/authenticationCertificates/',variables('healthprobe-auth-cer'))]",
+                        "properties": {
+                            "data": "[parameters('backendCertificateData')]"
+                        }
+                    }  ]  ,
+                "frontendIPConfigurations": [
+                    {
+                        "name": "frontendIpConfig",
+                        "properties": {
+                            "PublicIPAddress": {
+                                "id": "[variables('appGatewayPublicIpAddressId')]"
+                            }
+                        }
+                    }
+                ],
+                "frontendPorts": [
+                    {
+                        "name": "frontendPort",
+                        "properties": {
+                            "Port": "[variables('appGwFePort')]"
+                        }
+                    }
+                ],
+                "sslCertificates": [
+                    {
+                        "name": "appGwSslCertificate",
+                        "properties": {
+                            "data": "[parameters('sslCertificateData')]",
+                            "password": "[parameters('sslCertificatePassword')]"
+                        }
+                    }
+                ],
+                "backendAddressPools": [
+                    {    
+                        
+
+                        "name": "[variables('bpname')]" ,
+                            // 10.0.1.4
+                          "properties": {
+                            "backendAddresses": [
+                               {  
+                                   "ipAddress": "10.0.1.4" 
+                            
+                                } ,
+                                 { 
+                                     
+                                   "ipAddress": "10.0.1.5" 
+                            
+                                }
+                            ]  
+                          }
+
+
+
+                    }
+                ],
+                "backendHttpSettingsCollection": [
+                    {
+                        "name":  "[variables('httpsettingname')]",
+                        "properties": {
+                            "Port": "[variables('appGwBePort')]",
+                            "Protocol": "[variables('appGwBeProtocol')]"
+                            ,
+                            "cookieBasedAffinity": "Enabled",
+                            "pickHostNameFromBackendAddress": false,
+                            "affinityCookieName": "ApplicationGatewayAffinity",
+                            "requestTimeout": 600,
+                                   "probe": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('appGwname')), '/probes/',variables('healthprobename'))]"
+                            },
+                            "authenticationCertificates": [
+                                {
+                                    "id": "[concat(resourceId('Microsoft.Network/applicationGateways',variables('appGwname')), '/authenticationCertificates/',variables('healthprobe-auth-cer'))]"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "httpListeners": [
+                    {
+                        "name":  "[variables('listenername')]",
+                        "properties": {
+                            "FrontendIPConfiguration": {
+                                "Id": "[concat(variables('appGwId'), '/frontendIPConfigurations/frontendIpConfig')]"
+                            },
+                            "FrontendPort": {
+                                "Id": "[concat(variables('appGwId'), '/frontendPorts/frontendPort')]"
+                            },
+                            "Protocol": "[variables('appGwFeProtocol')]",
+                            "SslCertificate": {
+                                "id": "[concat(variables('appGwId'), '/sslCertificates/appGwSslCertificate')]"
+                            }
+                            ,
+                            "hostName":  "[parameters('Hostname')]",
+                            "hostNames": [],
+                            "requireServerNameIndication": true
+                        }
+                    }
+                ],
+                "sslPolicy": {
+                    "policyType": "Predefined",
+                    "policyName": "AppGwSslPolicy20170401S"
+                },
+                "webApplicationFirewallConfiguration": {
+                    "enabled": true,
+                    "firewallMode": "Prevention",
+                    "ruleSetType": "OWASP",
+                    "ruleSetVersion": "3.0",
+                    "disabledRuleGroups": [],
+                    "requestBodyCheck": true,
+                    "maxRequestBodySizeInKb": 128,
+                    "fileUploadLimitInMb": 100
+                },
+                "enableHttp2": false,
+
+                  "probes": [
+                    {
+                        "name": "[variables('healthprobename')]",
+                        "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('appGwname')), '/probes/',variables('healthprobename'))]",
+                        "properties": {
+                            "protocol": "Https",
+                            "host": "[parameters('Hostname')]",
+                            "path": "/sap/wdisp/admin/public/default.html",
+                            "interval": 30,
+                            "timeout": 30,
+                            "unhealthyThreshold": 3,
+                            "pickHostNameFromBackendHttpSettings": false,
+                            "minServers": 0,
+                            "match": {
+                                "statusCodes": [
+                                    "200-499"
+                                ]
+                            }
+                        }
+                    } ]
+                    
+                    ,
+                
+                "requestRoutingRules": [
+                    {
+                        "Name": "[variables('rulename')]",
+                        "properties": {
+                            "RuleType": "Basic",
+                            "httpListener": {
+                                "id": "[concat(variables('appGwId'), '/httpListeners/',variables('listenername'))]"
+                            },
+                            "backendAddressPool": {
+                                "id": "[concat(variables('appGwId'), '/backendAddressPools/',variables('bpname'))]"
+                            },
+                            "backendHttpSettings": {
+                                "id": "[concat(variables('appGwId'), '/backendHttpSettingsCollection/',variables('httpsettingname'))]"
+                            }
+                        }
+                    }
+                ]
+
+
+
+
+
+            }
+        }
+    ]
+}
