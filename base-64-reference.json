@@ -5,6 +5,17 @@
 
     
     "parameters": {
+
+         "Subscrip" : {
+          "defaultValue": "SAP-SE" ,
+
+          "allowedValues": [
+              "SAP-SE" ,
+              "SAP-shared-tenant"
+          ] ,
+        "type": "string" 
+        }
+        ,
         "cust-string" : {
           "defaultValue": "HEC45-ARM" ,
         "type": "string" 
@@ -88,6 +99,11 @@
     },
     "variables": {
         "networkApiVersion": "2022-01-01",
+
+        "workspace" : "[if(equals(parameters('Subscrip'),'SAP-SE'),'/subscriptions/74568cee-3f07-41ce-9ddc-2f4f6f44b861/resourcegroups/heconazure-loganalytics/providers/microsoft.operationalinsights/workspaces/heconazuresplunk','/subscriptions/50cf698b-3c79-45a6-b160-16e996932043/resourcegroups/heconazureshared-loganalytics/providers/microsoft.operationalinsights/workspaces/heconazuresplunksharedtenant')]"    ,
+        
+        
+        //  "/subscriptions/74568cee-3f07-41ce-9ddc-2f4f6f44b861/resourcegroups/heconazure-loganalytics/providers/microsoft.operationalinsights/workspaces/heconazuresplunk" 
 
         "subnetId": "[concat(variables('vNetId'), '/subnets/', parameters('subnetName'))]",
 
@@ -183,7 +199,7 @@
                 "category": "AllMetrics"
             }
         ],
-        "workspaceId": "/subscriptions/74568cee-3f07-41ce-9ddc-2f4f6f44b861/resourcegroups/heconazure-loganalytics/providers/microsoft.operationalinsights/workspaces/heconazuresplunk",
+        "workspaceId": "[variables('workspace')]",
         "logAnalyticsDestinationType": null
     }
      }
