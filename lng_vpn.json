@@ -1,0 +1,140 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+
+
+    
+    "parameters": {
+
+        "cust-string" : {
+          "defaultValue": "HEC45-ARM" ,
+        "type": "string" 
+        }
+      ,
+
+       "vngname": {
+            "defaultValue" : "vng-HEC45-ARM-VPN",
+            "type": "string"
+
+
+        } ,
+
+
+        
+        "gatewayip": {
+            "defaultValue" : "2.2.3.4",
+            "type": "string"
+
+
+        }  ,
+
+        "localaddresses": {
+            "defaultValue" : ["192.168.1.0/24","192.168.3.0/24"] ,
+            "type": "array"
+
+
+        }  ,
+
+        "PreSharedKey": {
+            "defaultValue":"abcdefgh",
+            "type": "string"
+        }
+         ,
+
+        "vpnnumber": {
+            "defaultValue": "2" ,
+            "type": "string"
+
+
+        }
+        
+
+    },
+    "variables": {
+        // "networkApiVersion": "2022-01-01",
+
+       
+        
+        //  "/subscriptions/74568cee-3f07-41ce-9ddc-2f4f6f44b861/resourcegroups/heconazure-loganalytics/providers/microsoft.operationalinsights/workspaces/heconazuresplunk" 
+
+        
+        //vng-HEC48-MBU-VPN
+        // pip-VNG-HEC45-CRI-VPN-IP1
+        //  lng-HEC48-HTC-01
+        // vpn-HEC45-MBU-01
+        // diag-VNG-HEC44-TOU-01
+
+       
+        "lngname": "[concat('lng-',parameters('cust-string'),'-',parameters('vpnnumber'))]",
+        "vpnname": "[concat('vpn-',parameters('cust-string'),'-',parameters('vpnnumber'))]"
+       
+        // "VngId": "[resourceId('Microsoft.Network/applicationGateways/', variables('VngName'))]",
+        // "vnetId" :  "[concat(subscription().id,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Network/virtualNetworks/',parameters('vnet_name'))]"
+        
+    },
+    "resources": [
+
+
+
+    
+
+        {
+            "apiVersion": "2020-08-01",
+            "type":"Microsoft.Network/localNetworkGateways",
+            "name": "[variables('lngname')]",
+            "location": "[resourceGroup().location]",
+
+             "properties": {
+                "localNetworkAddressSpace": {
+                    "addressPrefixes": "[parameters('localaddresses')]"
+                },
+                "gatewayIpAddress": "[parameters('gatewayip')]"
+            }
+            
+        } ,
+
+        {
+        "apiVersion": "2018-07-01",
+        "name": "[variables('vpnname')]",
+        "type": "Microsoft.Network/connections",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+          
+          "[concat('Microsoft.Network/localNetworkGateways/', variables('lngname'))]"
+        ],
+        "properties": {
+          "virtualNetworkGateway1": {
+            "id": "[concat(subscription().id,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Network/virtualNetworkGateways/',parameters('vngname'))]"
+          },
+          "localNetworkGateway2": {
+            "id": "[resourceId('Microsoft.Network/localNetworkGateways',  variables('lngname'))]"
+          },
+         "connectionType": "IPsec",
+         "connectionProtocol": "IKEv2",
+         "routingWeight": 10,
+         "useLocalAzureIpAddress": false,
+         "usePolicyBasedTrafficSelectors": false,
+         "ipsecPolicies": [],
+         "trafficSelectorPolicies": [],
+         
+         "dpdTimeoutSeconds": 0,
+          "connectionMode": "Default",
+          
+          "sharedKey": "[parameters('PreSharedKey')]"
+        }
+      }
+
+
+    ] ,
+
+    "outputs": {
+    "nameResult": {
+      "type": "string",
+      "value": "[tenant().displayName]"
+    }
+  }
+
+
+
+    
+}
